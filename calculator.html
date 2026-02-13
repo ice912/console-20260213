@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>아이폰 스타일 계산기</title>
+    <style>
+        /* CSS: 아이폰 특유의 어두운 테마와 둥근 버튼 디자인 */
+        body { background-color: #000; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        .calculator { width: 320px; background-color: #000; padding: 20px; border-radius: 40px; }
+        .display { color: white; font-size: 80px; text-align: right; padding: 20px; margin-bottom: 10px; font-weight: 300; overflow: hidden; }
+        .buttons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+        button { border: none; border-radius: 50%; width: 70px; height: 70px; font-size: 30px; cursor: pointer; transition: brightness 0.2s; }
+        button:active { filter: brightness(1.5); }
+        /* 색상 테마 */
+        .btn-gray { background-color: #a5a5a5; color: black; } /* 상단 보조키 */
+        .btn-dark { background-color: #333333; color: white; } /* 숫자키 */
+        .btn-orange { background-color: #ff9f0a; color: white; } /* 연산자키 */
+        .btn-zero { grid-column: span 2; width: 152px; border-radius: 40px; text-align: left; padding-left: 30px; }
+    </style>
+</head>
+<body>
+
+<div class="calculator">
+    <div class="display" id="display">0</div>
+    <div class="buttons">
+        <button class="btn-gray" onclick="clearDisplay()">AC</button>
+        <button class="btn-gray">+/-</button>
+        <button class="btn-gray">%</button>
+        <button class="btn-orange" onclick="setOperator('/')">÷</button>
+        
+        <button class="btn-dark" onclick="appendNumber('7')">7</button>
+        <button class="btn-dark" onclick="appendNumber('8')">8</button>
+        <button class="btn-dark" onclick="appendNumber('9')">9</button>
+        <button class="btn-orange" onclick="setOperator('*')">×</button>
+        
+        <button class="btn-dark" onclick="appendNumber('4')">4</button>
+        <button class="btn-dark" onclick="appendNumber('5')">5</button>
+        <button class="btn-dark" onclick="appendNumber('6')">6</button>
+        <button class="btn-orange" onclick="setOperator('-')">-</button>
+        
+        <button class="btn-dark" onclick="appendNumber('1')">1</button>
+        <button class="btn-dark" onclick="appendNumber('2')">2</button>
+        <button class="btn-dark" onclick="appendNumber('3')">3</button>
+        <button class="btn-orange" onclick="setOperator('+')">+</button>
+        
+        <button class="btn-dark btn-zero" onclick="appendNumber('0')">0</button>
+        <button class="btn-dark" onclick="appendNumber('.')">.</button>
+        <button class="btn-orange" onclick="calculate()">=</button>
+    </div>
+</div>
+
+<script>
+    // JS: 계산 로직 구현
+    let currentInput = '0';
+    let previousInput = '';
+    let operator = null;
+
+    const display = document.getElementById('display');
+
+    function updateDisplay() {
+        // 숫자가 길어지면 폰트 크기 조절 (아이폰 특징)
+        display.innerText = currentInput;
+        display.style.fontSize = currentInput.length > 6 ? '40px' : '80px';
+    }
+
+    function appendNumber(num) {
+        if (currentInput === '0' && num !== '.') currentInput = num;
+        else currentInput += num;
+        updateDisplay();
+    }
+
+    function clearDisplay() {
+        currentInput = '0';
+        previousInput = '';
+        operator = null;
+        updateDisplay();
+    }
+
+    function setOperator(op) {
+        operator = op;
+        previousInput = currentInput;
+        currentInput = '0';
+    }
+
+    function calculate() {
+        if (!operator || !previousInput) return;
+        const num1 = parseFloat(previousInput);
+        const num2 = parseFloat(currentInput);
+        let result = 0;
+
+        switch (operator) {
+            case '+': result = num1 + num2; break;
+            case '-': result = num1 - num2; break;
+            case '*': result = num1 * num2; break;
+            case '/': result = num1 / num2; break;
+        }
+
+        currentInput = String(result);
+        operator = null;
+        updateDisplay();
+    }
+</script>
+
+</body>
+</html>
